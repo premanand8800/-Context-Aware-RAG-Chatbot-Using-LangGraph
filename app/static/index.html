@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Research RAG Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="sidebar">
+        <header class="masthead">
+          <p class="folio">RAG</p>
+          <h1>Research RAG Agent</h1>
+        </header>
+
+        <section class="panel">
+          <div class="panel-number">01</div>
+          <div class="panel-body">
+            <h2>Optional upload</h2>
+            <form id="upload-form" class="upload-form">
+              <label for="pdf-file">PDF paper</label>
+              <input id="pdf-file" name="file" type="file" accept="application/pdf" />
+              <button id="upload-button" type="submit">Ingest another PDF</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-number">02</div>
+          <div class="panel-body">
+            <h2>Indexed papers</h2>
+            <label for="document-select">Document</label>
+            <select id="document-select"></select>
+            <p id="document-count" class="meta-line">0 documents</p>
+          </div>
+        </section>
+
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="chat">
+        <header class="chat-header">
+          <div>
+            <p class="section-number">03</p>
+            <h2>Chat</h2>
+          </div>
+          <p id="active-document" class="active-document">No document selected</p>
+        </header>
+        <div id="messages" class="messages"></div>
+        <form id="chat-form" class="chat-form">
+          <input
+            id="question"
+            type="text"
+            autocomplete="off"
+            placeholder="Ask about the selected paper"
+          />
+          <button id="send-button" type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

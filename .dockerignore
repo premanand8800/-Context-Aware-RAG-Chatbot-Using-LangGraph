@@ -1,0 +1,11 @@
+.env
+.venv/
+.ruff_cache/
+__pycache__/
+*.pyc
+data/
+.cogsessions/
+.agents/
+.codex/
+.git/
+CLAUDE.md
