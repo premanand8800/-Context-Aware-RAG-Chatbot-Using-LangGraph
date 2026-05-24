@@ -132,10 +132,9 @@ I included a demo video in the repository here:
 
 [![Demo video](./demo-video-thumb.svg)](./Rag_Agent.mp4)
 
-GitHub will render the thumbnail in the README and open the MP4 when it is clicked.
+Here is the link of the demo: (https://drive.google.com/file/d/1G4mQpV15BfZIVjY6SliocZHMK0PQHrk2/view?usp=sharing)
 
 ## Notes
 
-- I kept `.env`, runtime data, caches, and session folders out of Git.
 - I use a pre-indexed paper in the UI for testing when I want to avoid another upload and re-embedding pass.
 - The default chat model is `gemini-2.5-flash-lite` to keep request usage lower.
