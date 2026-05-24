@@ -1,19 +1,35 @@
-# LangGraph Research RAG Agent
+# Context-Aware RAG Chatbot Using LangGraph
 
-Context-aware RAG chatbot for research paper PDFs. Users upload a PDF, the app extracts text with OpenDataLoader PDF, embeds chunks with Gemini Embedding 2, stores vectors in Qdrant, and answers questions through a LangGraph workflow.
+I built this project as a context-aware RAG chatbot for research paper PDFs. It lets me upload or select an already indexed paper, ask questions through a web UI, and get answers grounded in the retrieved document chunks with citations.
 
-## Features
+## What I built
 
-- PDF upload and ingestion
-- arXiv-paper validation before embedding
-- OpenDataLoader PDF extraction
-- Gemini `gemini-embedding-2` embeddings with 768 dimensions
-- Qdrant vector search
-- LangChain `create_agent` research agent with LangGraph short-term memory and a RAG tool
-- FastAPI backend
-- Streaming chat endpoint with graph progress events
-- Basic web UI
-- Dockerized runtime using `uv`
+- FastAPI backend for upload, retrieval, and chat
+- LangGraph agent with short-term conversational memory
+- RAG tool backed by Qdrant vector search
+- Gemini embeddings for document chunking and retrieval
+- Streaming chat endpoint for incremental responses
+- Simple web UI for document selection and chat
+- Dockerized runtime with `uv`
+- Optional fallback model support through Groq
+
+## How it works
+
+1. I ingest a PDF and convert it to markdown with OpenDataLoader PDF.
+2. I split the document into overlapping chunks.
+3. I embed the chunks with `gemini-embedding-2` and store them in Qdrant.
+4. I route chat requests through a LangGraph agent.
+5. When the question is about the selected paper, the agent calls `rag_search` and answers from retrieved context.
+6. The UI can also use a pre-indexed demo paper, so I can test the app without uploading again.
+
+## Requirements
+
+- Python 3.11+
+- `uv`
+- Java 11+ for OpenDataLoader PDF
+- Gemini API key
+- Qdrant instance
+- Optional Groq API key for fallback models
 
 ## Setup
 
@@ -22,7 +38,7 @@ uv sync
 cp .env.example .env
 ```
 
-Fill `.env`:
+Fill in `.env`:
 
 ```env
 GEMINI_API_KEY=
@@ -40,45 +56,39 @@ DEMO_DOCUMENT_FILENAME=
 DEMO_DOCUMENT_CHUNKS=0
 ```
 
-OpenDataLoader PDF requires Java 11+. On Ubuntu/Debian:
+If I want to show a pre-indexed paper in the UI, I set the `DEMO_DOCUMENT_*` values to a document already stored in Qdrant.
 
-```bash
-sudo apt install openjdk-21-jdk
-```
-
-Run locally:
+## Run Locally
 
 ```bash
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Security note:
+Open:
 
-- Do not commit real API keys to the repository. Add secrets to `.env` locally or use a secret manager.
-- If an API key is accidentally committed, rotate it immediately.
-
-Open `http://localhost:8000`.
-
-To let reviewers test without uploading and re-embedding a PDF, set the
-`DEMO_DOCUMENT_*` variables to a document that is already indexed in your vector
-store. The UI will list that paper immediately and users can start chatting with
-it directly.
+```text
+http://localhost:8000
+```
 
 ## API
 
-The chat layer is built with `langchain.agents.create_agent`. The agent has one tool, `rag_search`, that retrieves selected arXiv paper chunks from Qdrant. It calls that tool for paper questions and answers memory/model questions directly from the conversation state.
+Health check:
 
 ```bash
 curl http://localhost:8000/api/health
 ```
 
-Upload:
+List documents:
+
+```bash
+curl http://localhost:8000/api/documents
+```
+
+Upload a paper:
 
 ```bash
 curl -F "file=@paper.pdf" http://localhost:8000/api/documents/upload
 ```
-
-Only arXiv research paper PDFs are accepted for ingestion. Non-arXiv PDFs are rejected before embedding.
 
 Chat:
 
@@ -98,28 +108,34 @@ curl -N -X POST http://localhost:8000/api/chat/stream \
 
 ## Docker
 
-Build:
+Build the image:
 
 ```bash
-docker build -t your-dockerhub-user/rag-research-agent:latest .
+docker build -t premanandpathak/rag-research-agent:latest .
 ```
 
-Run:
+Run the container:
 
 ```bash
-docker run --env-file .env -p 8000:8000 your-dockerhub-user/rag-research-agent:latest
+docker run --env-file .env -p 8000:8000 premanandpathak/rag-research-agent:latest
 ```
 
-Push:
+Docker Hub image:
 
-```bash
-docker push your-dockerhub-user/rag-research-agent:latest
+```text
+https://hub.docker.com/r/premanandpathak/rag-research-agent
 ```
 
-Submission should include:
+## Demo Video
 
-- GitHub repository URL
-- Docker image URL
-- Docker run command
-- Required environment variables
-- Demo video showing upload, ingestion, and context-aware chat
+I included a demo video with the repository here:
+
+```text
+Rag_Agent.mp4
+```
+
+## Notes
+
+- I kept `.env`, runtime data, caches, and session folders out of Git.
+- I use a pre-indexed paper in the UI for testing when I want to avoid another upload and re-embedding pass.
+- The default chat model is `gemini-2.5-flash-lite` to keep request usage lower.
