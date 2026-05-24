@@ -130,9 +130,9 @@ https://hub.docker.com/r/premanandpathak/rag-research-agent
 
 I included a demo video in the repository here:
 
-[Watch `Rag_Agent.mp4`](./Rag_Agent.mp4)
+[![Demo video](./demo-video-thumb.svg)](./Rag_Agent.mp4)
 
-GitHub will open the file viewer/player when the link is clicked. README files do not inline-play local MP4 files consistently.
+GitHub will render the thumbnail in the README and open the MP4 when it is clicked.
 
 ## Notes
 
